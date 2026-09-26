@@ -1,0 +1,53 @@
+{% extends 'base.html' %}{% from 'macros.html' import csrf %}
+{% block title %}{{ 'Editar obra' if obra else 'Nova obra' }}{% endblock %}
+{% macro field(name, label, type='text', required=false, maxlength=160) %}
+<div class="field">
+<label for="{{ name }}">{{ label }}{% if required %} <span class="required">*</span>{% endif %}</label>
+<input id="{{ name }}" name="{{ name }}" type="{{ type }}" value="{{ data.get(name, '') }}" maxlength="{{ maxlength }}" {{ 'required' if required }} {% if errors.get(name) %}aria-invalid="true" aria-describedby="error-{{ name }}"{% endif %}>{% if errors.get(name) %}
+<small class="field-error" id="error-{{ name }}">{{ errors[name] }}</small>{% endif %}</div>
+{% endmacro %}
+{% block content %}
+<a class="back-link" href="{{ url_for('obras.detail', obra_id=obra.id) if obra else url_for('obras.index') }}">← Voltar às obras</a>
+<div class="page-heading">
+<div>
+<p class="eyebrow">CADASTRO DE EMPREENDIMENTO</p>
+<h1>{{ 'Editar obra' if obra else 'Nova obra' }}</h1>
+<p>Preencha os dados gerais. Campos com * são obrigatórios.</p>
+</div>
+</div>
+{% if errors %}
+<div class="alert error" role="alert">Não foi possível salvar. Confira os campos indicados abaixo.</div>{% endif %}
+<form method="post" class="panel edit-form">{{ csrf() }}<section class="form-section">
+<h2>Identificação</h2>
+<p>As informações principais do empreendimento.</p>
+<div class="form-grid">{{ field('nome','Nome da obra',required=true) }}{{ field('codigo','Código da obra',required=true,maxlength=40) }}{{ field('cliente','Cliente') }}{{ field('responsavel','Responsável') }}</div>
+</section>
+<section class="form-section">
+<h2>Localização</h2>
+<div class="form-grid">{{ field('endereco','Endereço',maxlength=250) }}{{ field('cidade','Cidade',maxlength=120) }}<div class="field">
+<label for="estado">Estado</label>
+<select name="estado" id="estado">
+<option value="">Selecione a UF</option>{% for state in states %}
+<option {{ 'selected' if data.get('estado') == state }}>{{ state }}</option>{% endfor %}</select>{% if errors.get('estado') %}
+<small class="field-error">{{ errors.estado }}</small>{% endif %}</div>
+</div>
+</section>
+<section class="form-section">
+<h2>Prazos e acompanhamento</h2>
+<div class="form-grid">{{ field('data_inicio','Data de início',type='date') }}{{ field('previsao_termino','Previsão de término',type='date') }}<div class="field">
+<label for="status">Status <span class="required">*</span>
+</label>
+<select name="status" id="status" required>{% for value,label in statuses.items() %}
+<option value="{{ value }}" {{ 'selected' if data.get('status') == value }}>{{ label }}</option>{% endfor %}</select>{% if errors.get('status') %}
+<small class="field-error">{{ errors.status }}</small>{% endif %}</div>
+</div>
+<div class="field notes">
+<label for="observacoes">Observações</label>
+<textarea id="observacoes" name="observacoes" rows="5" maxlength="5000" placeholder="Informações adicionais sobre a obra">{{ data.get('observacoes', '') }}</textarea>{% if errors.get('observacoes') %}
+<small class="field-error">{{ errors.observacoes }}</small>{% endif %}</div>
+</section>
+<div class="form-actions">
+<a class="button secondary" href="{{ url_for('obras.detail', obra_id=obra.id) if obra else url_for('obras.index') }}">Cancelar</a>
+<button class="button primary">{{ 'Salvar alterações' if obra else 'Cadastrar obra' }}</button>
+</div>
+</form>{% endblock %}

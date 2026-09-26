@@ -1,0 +1,34 @@
+{% extends 'base.html' %}{% from 'macros.html' import obra_table with context %}
+{% block title %}Obras{% endblock %}{% block content %}
+<div class="page-heading">
+<div>
+<p class="eyebrow">EMPREENDIMENTOS</p>
+<h1>Obras</h1>
+<p>Organize os dados e acompanhe cada empreendimento.</p>
+</div>
+<a class="button primary" href="{{ url_for('obras.create') }}">＋ Nova obra</a>
+</div>
+<section class="panel">
+<form class="filters" method="get">
+<div class="search-field">
+<label for="q">Pesquisar obras</label>
+<input id="q" name="q" value="{{ query }}" maxlength="200" placeholder="Nome, código, cliente ou cidade">
+</div>
+<div>
+<label for="status">Status</label>
+<select id="status" name="status">
+<option value="">Todos os status</option>{% for value,label in statuses.items() %}
+<option value="{{ value }}" {{ 'selected' if selected_status == value }}>{{ label }}</option>{% endfor %}</select>
+</div>
+<button class="button primary">Pesquisar</button>
+<a class="button secondary" href="{{ url_for('obras.index') }}">Limpar</a>
+</form>
+<div class="results-label">{{ obras|length }} obra(s) encontrada(s)</div>
+{% if obras %}{{ obra_table(obras) }}{% else %}
+<div class="empty">
+<span class="empty-symbol">▤</span>
+<h3>Nenhuma obra encontrada</h3>
+<p>{% if query or selected_status %}Tente outro termo ou remova os filtros.{% else %}Comece cadastrando os dados do seu primeiro empreendimento.{% endif %}</p>
+<a class="button secondary" href="{{ url_for('obras.create') }}">Cadastrar obra</a>
+</div>{% endif %}</section>
+{% endblock %}

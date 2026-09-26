@@ -1,0 +1,50 @@
+{% extends 'base.html' %}{% from 'macros.html' import obra_table with context %}
+{% block title %}Dashboard{% endblock %}
+{% block content %}
+<div class="page-heading">
+<div>
+<p class="eyebrow">VISÃO GERAL</p>
+<h1>Dashboard</h1>
+<p>Acompanhe suas obras, do primeiro passo à entrega.</p>
+</div>
+<a class="button primary" href="{{ url_for('obras.create') }}">＋ Nova obra</a>
+</div>
+<section class="stats" aria-label="Indicadores de obras">
+{% for key, label, help in [('total','Total de obras','Todos os empreendimentos'),('ativa','Obras ativas','Em acompanhamento'),('concluida','Concluídas','Empreendimentos entregues'),('arquivada','Arquivadas','Histórico preservado')] %}
+<a class="stat-card" href="{{ url_for('obras.index', status=key if key != 'total' else '') }}">
+<div>{{ label }}<span class="stat-icon {{ key }}" aria-hidden="true">{{ ['▤','↗','✓','▱'][loop.index0] }}</span>
+</div>
+<strong>{{ counts[key] }}</strong>
+<small>{{ help }}</small>
+</a>{% endfor %}
+</section>
+<section class="panel">
+<div class="section-heading">
+<div>
+<h2>Obras recentes</h2>
+<p>Seus últimos empreendimentos cadastrados.</p>
+</div>
+<a class="text-link" href="{{ url_for('obras.index') }}">Ver todas →</a>
+</div>
+{% if obras %}{{ obra_table(obras) }}{% else %}
+<div class="empty">
+<span class="empty-symbol">▤</span>
+<h3>Sua primeira obra começa aqui</h3>
+<p>Cadastre um empreendimento para centralizar as informações e acompanhar seu status.</p>
+<a class="button primary" href="{{ url_for('obras.create') }}">Cadastrar primeira obra</a>
+</div>{% endif %}</section>
+<div class="section-heading standalone">
+<div>
+<h2>Seu escritório em um só lugar</h2>
+<p>Módulos preparados para as próximas etapas.</p>
+</div>
+<span class="subtle-label">EM DESENVOLVIMENTO</span>
+</div>
+<section class="module-grid">{% for name, label in modules %}
+<a class="module-card" href="{{ url_for(name ~ '.index') }}">
+<span class="module-icon" aria-hidden="true">{{ ['◷','▱','▥','＄','♧','▧','▥'][loop.index0] }}</span>
+<strong>{{ label }}</strong>
+<span class="arrow" aria-hidden="true">↗</span>
+<small>Conheça o módulo</small>
+</a>{% endfor %}</section>
+{% endblock %}

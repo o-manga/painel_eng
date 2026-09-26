@@ -1,0 +1,19 @@
+{% extends 'base.html' %}{% from 'macros.html' import csrf %}{% block title %}Excluir obra{% endblock %}{% block content %}
+<div class="page-heading">
+<div>
+<p class="eyebrow">CONFIRMAÇÃO</p>
+<h1>Excluir obra</h1>
+<p>Revise os dados antes de continuar.</p>
+</div>
+</div>
+<section class="panel confirmation">
+<h2>{{ obra.nome }}</h2>
+<p>A exclusão remove permanentemente o cadastro <strong>{{ obra.codigo }}</strong>. Para manter o histórico, prefira arquivar a obra.</p>
+<form method="post">{{ csrf() }}<label for="confirmacao">Digite <strong>{{ obra.codigo }}</strong> para confirmar</label>
+<input id="confirmacao" name="confirmacao" autocomplete="off" required>
+<div class="form-actions">
+<a class="button secondary" href="{{ url_for('obras.detail', obra_id=obra.id) }}">Cancelar</a>
+<button class="button danger">Excluir permanentemente</button>
+</div>
+</form>
+</section>{% endblock %}

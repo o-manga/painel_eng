@@ -1,0 +1,17 @@
+{% extends 'base.html' %}{% block title %}{{ title }}{% endblock %}{% block content %}
+{% if obra %}
+<a class="back-link" href="{{ url_for('obras.detail', obra_id=obra.id) }}">← Voltar para {{ obra.nome }}</a>{% endif %}
+<div class="page-heading">
+<div>
+<p class="eyebrow">{{ ('OBRA · ' ~ obra.codigo) if obra else 'MÓDULOS DO SISTEMA' }}</p>
+<h1>{{ title }}</h1>
+<p>{{ obra.nome if obra else 'Uma nova etapa na gestão dos seus empreendimentos.' }}</p>
+</div>
+</div>
+<section class="panel empty">
+<span class="empty-symbol">◷</span>
+<span class="subtle-label">PRÓXIMAS VERSÕES</span>
+<h2>Módulo em desenvolvimento</h2>
+<p>O espaço de {{ title|lower }} está preparado para receber as próximas funcionalidades.{% if obra %} Este acesso está vinculado à obra <strong>{{ obra.codigo }}</strong>.{% endif %}</p>
+<a class="button secondary" href="{{ url_for('obras.detail', obra_id=obra.id) if obra else url_for('dashboard.index') }}">{{ 'Voltar à obra' if obra else 'Voltar ao dashboard' }}</a>
+</section>{% endblock %}

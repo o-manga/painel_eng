@@ -1,0 +1,52 @@
+{% extends 'base.html' %}{% from 'macros.html' import badge,csrf with context %}
+{% block title %}{{ obra.nome }}{% endblock %}{% block content %}
+<a class="back-link" href="{{ url_for('obras.index') }}">← Todas as obras</a>
+<div class="page-heading">
+<div>
+<p class="eyebrow">CENTRAL DA OBRA · {{ obra.codigo }}</p>
+<h1>{{ obra.nome }}</h1>
+<p>{{ obra.cidade or 'Localização não informada' }}{% if obra.estado %} / {{ obra.estado }}{% endif %} &nbsp; {{ badge(obra.status) }}</p>
+</div>
+<a class="button primary" href="{{ url_for('obras.edit', obra_id=obra.id) }}">Editar obra</a>
+</div>
+<section class="panel">
+<div class="section-heading">
+<h2>Dados gerais</h2>
+<span class="subtle-label">{{ obra.codigo }}</span>
+</div>
+<dl class="detail-grid">{% for label,value in [('Endereço',obra.endereco),('Cidade',obra.cidade),('Estado',obra.estado),('Cliente',obra.cliente),('Responsável',obra.responsavel),('Data de início',obra.data_inicio|date_br),('Previsão de término',obra.previsao_termino|date_br)] %}
+<div>
+<dt>{{ label }}</dt>
+<dd>{{ value or 'Não informado' }}</dd>
+</div>{% endfor %}</dl>
+<div class="detail-notes">
+<h3>Observações</h3>
+<p class="preserve-lines">{{ obra.observacoes or 'Nenhuma observação registrada.' }}</p>
+</div>
+</section>
+<div class="section-heading standalone">
+<div>
+<h2>Gerenciar esta obra</h2>
+<p>Os módulos abaixo estão vinculados a {{ obra.codigo }}.</p>
+</div>
+</div>
+<section class="module-grid">{% for name,label in modules %}
+<a class="module-card" href="{{ url_for(name ~ '.index', obra_id=obra.id) }}">
+<strong>{{ label }}</strong>
+<span class="arrow">↗</span>
+<small>Em desenvolvimento</small>
+</a>{% endfor %}</section>
+<section class="panel management">
+<div>
+<h2>Gerenciar cadastro</h2>
+<p>Arquivar mantém todos os dados para consulta futura.</p>
+</div>
+<div class="action-group">{% if obra.status != 'arquivada' %}
+<form method="post" action="{{ url_for('obras.archive', obra_id=obra.id) }}">{{ csrf() }}<button class="button secondary">Arquivar obra</button>
+</form>{% endif %}{% if obra.status != 'ativa' %}
+<form method="post" action="{{ url_for('obras.reactivate', obra_id=obra.id) }}">{{ csrf() }}<button class="button secondary">Reativar obra</button>
+</form>{% endif %}
+<a class="button danger-outline" href="{{ url_for('obras.delete', obra_id=obra.id) }}">Excluir obra</a>
+</div>
+</section>
+{% endblock %}

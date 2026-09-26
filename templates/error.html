@@ -1,0 +1,7 @@
+{% extends 'base.html' %}{% block title %}Não foi possível continuar{% endblock %}{% block content %}
+<section class="panel empty">
+<p class="eyebrow">ERRO {{ code }}</p>
+<h1>Não foi possível continuar</h1>
+<p>{{ message if code != 500 else 'Ocorreu um erro interno. Tente novamente.' }}</p>
+<a class="button primary" href="{{ url_for('dashboard.index') }}">Voltar ao início</a>
+</section>{% endblock %}
